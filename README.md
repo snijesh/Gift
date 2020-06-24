@@ -15,3 +15,15 @@
 - tolerated_low_confidence: More likely to have a phenotypic effect than 'tolerated'<br>
 - deleterious: Likely to have a phenotypic effect<br>
 - deleterious_low_confidence: Less likely to have a phenotypic effect than 'deleterious'<br>
+
+
+# Cancer Genome Interpreter
+https://www.cancergenomeinterpreter.org/mutations
+
+## Pathogenecity Prediction
+http://asia.ensembl.org/info/genome/variation/prediction/protein_function.html
+Clinvar, PolyPhen and Sift
+Consider Clinvar regardless of any other parameter parameters
+
+https://www.biostars.org/p/6488/
+https://pubmed.ncbi.nlm.nih.gov/20642364/
