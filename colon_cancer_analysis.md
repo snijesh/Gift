@@ -1122,16 +1122,6 @@ colon_mutation_clinvar.drop(['PolyPhen', 'SIFT'], axis=1, inplace=True)
 colon_mutation_clinvar
 ```
 
-    /home/molmed/anaconda3/lib/python3.7/site-packages/pandas/core/frame.py:4117: SettingWithCopyWarning: 
-    A value is trying to be set on a copy of a slice from a DataFrame
-    
-    See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-      errors=errors,
-
-
-
-
-
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
