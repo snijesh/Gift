@@ -314,7 +314,7 @@ clinical_closus
 
 ```python
 #Read count data (raw)
-count_closus_raw = pd.read_excel('/media/molmed/Analysis/ICR/QC/QC/COLOSSUS_RNA_Lexogen_retrospective cohort_June2020_counts.xlsx')
+count_closus_raw = pd.read_excel('ICR/QC/COLOSSUS_RNA_Lexogen_retrospective cohort_June2020_counts.xlsx')
 count_closus_raw
 ```
 
@@ -2226,7 +2226,7 @@ filter_count_clinical_map.to_csv('filter_count_clinical_map.txt', sep='\t', inde
 
 ```python
 
-setwd('/media/molmed/Analysis/ICR/QC/QC/DESeq_Analysis')
+setwd('/media/molmed/Analysis/ICR/QC/DESeq_Analysis')
 library(DESeq2)
 library(sva)
 
