@@ -1,0 +1,2401 @@
+## Data Preprocessing
+
+
+```python
+import pandas as pd
+```
+
+
+```python
+#Read clinical info
+clinical_closus = pd.read_table('ICR/QC/20200526-colossus_data_prognosis_calculated.txt', sep='\t')
+clinical_closus
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>center</th>
+      <th>COLOSSUS_ID</th>
+      <th>gender</th>
+      <th>race</th>
+      <th>birthyear</th>
+      <th>date_CRC_diagnosis</th>
+      <th>ECOG_at_diagnosis</th>
+      <th>histologic_type</th>
+      <th>histologic_grade</th>
+      <th>lymphovascular_invasion</th>
+      <th>...</th>
+      <th>date_fup</th>
+      <th>OS_months</th>
+      <th>status_fup</th>
+      <th>status_OS</th>
+      <th>site_mut</th>
+      <th>KRAS_specific_variant</th>
+      <th>NRAS_specific_variant</th>
+      <th>status_MSI</th>
+      <th>IHC</th>
+      <th>PCR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>VHIO</td>
+      <td>COL-268-R-001</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1965</td>
+      <td>02/02/15</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>12/07/18</td>
+      <td>41.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G12C</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>VHIO</td>
+      <td>COL-268-R-002</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1944</td>
+      <td>28/09/14</td>
+      <td>0.0</td>
+      <td>mucinous</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>20/09/18</td>
+      <td>47.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G12D</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>VHIO</td>
+      <td>COL-268-R-003</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1941</td>
+      <td>15/07/14</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G1</td>
+      <td>no</td>
+      <td>...</td>
+      <td>26/11/18</td>
+      <td>52.0</td>
+      <td>death</td>
+      <td>1</td>
+      <td>KRAS</td>
+      <td>A146V</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>VHIO</td>
+      <td>COL-268-R-004</td>
+      <td>female</td>
+      <td>caucasian</td>
+      <td>1936</td>
+      <td>21/10/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G3</td>
+      <td>no</td>
+      <td>...</td>
+      <td>18/06/18</td>
+      <td>55.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G13D</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>VHIO</td>
+      <td>COL-268-R-005</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1930</td>
+      <td>21/10/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G3</td>
+      <td>no</td>
+      <td>...</td>
+      <td>17/06/16</td>
+      <td>31.0</td>
+      <td>death</td>
+      <td>1</td>
+      <td>KRAS</td>
+      <td>G12D</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>179</th>
+      <td>INSERM</td>
+      <td>COL-002-R-202</td>
+      <td>male</td>
+      <td>NaN</td>
+      <td>1942</td>
+      <td>01/07/13</td>
+      <td>NaN</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>no</td>
+      <td>...</td>
+      <td>27/11/18</td>
+      <td>64.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G13</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>180</th>
+      <td>INSERM</td>
+      <td>COL-002-R-203</td>
+      <td>female</td>
+      <td>NaN</td>
+      <td>1946</td>
+      <td>21/10/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>11/03/19</td>
+      <td>64.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G12</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>181</th>
+      <td>INSERM</td>
+      <td>COL-002-R-204</td>
+      <td>female</td>
+      <td>NaN</td>
+      <td>1939</td>
+      <td>14/06/13</td>
+      <td>2.0</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>25/05/19</td>
+      <td>71.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G12</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>182</th>
+      <td>INSERM</td>
+      <td>COL-002-R-205</td>
+      <td>male</td>
+      <td>NaN</td>
+      <td>1932</td>
+      <td>05/07/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G1</td>
+      <td>no</td>
+      <td>...</td>
+      <td>01/07/19</td>
+      <td>71.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G12</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>183</th>
+      <td>INSERM</td>
+      <td>COL-002-R-206</td>
+      <td>male</td>
+      <td>NaN</td>
+      <td>1987</td>
+      <td>22/07/13</td>
+      <td>0.0</td>
+      <td>adenocarcinoma</td>
+      <td>G1</td>
+      <td>no</td>
+      <td>...</td>
+      <td>07/02/19</td>
+      <td>66.0</td>
+      <td>alive</td>
+      <td>0</td>
+      <td>KRAS</td>
+      <td>G12</td>
+      <td>NaN</td>
+      <td>NEGATIVE</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+<p>184 rows × 48 columns</p>
+</div>
+
+
+
+
+```python
+#Read count data (raw)
+count_closus_raw = pd.read_excel('/media/molmed/Analysis/ICR/QC/QC/COLOSSUS_RNA_Lexogen_retrospective cohort_June2020_counts.xlsx')
+count_closus_raw
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Geneid</th>
+      <th>COL-268-R-001</th>
+      <th>COL-268-R-002</th>
+      <th>COL-268-R-003</th>
+      <th>COL-268-R-004</th>
+      <th>COL-268-R-005</th>
+      <th>COL-268-R-006</th>
+      <th>COL-268-R-007</th>
+      <th>COL-268-R-008</th>
+      <th>COL-268-R-009</th>
+      <th>...</th>
+      <th>COL-001-R-237</th>
+      <th>COL-001-R-238</th>
+      <th>COL-001-R-239</th>
+      <th>COL-001-R-244</th>
+      <th>COL-001-R-245</th>
+      <th>COL-001-R-243</th>
+      <th>COL-001-R-231</th>
+      <th>COL-001-R-242</th>
+      <th>COL-001-R-230</th>
+      <th>COL-001-R-232</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>DDX11L1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>WASH7P</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MIR6859-3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>MIR6859-2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MIR6859-4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>26359</th>
+      <td>CDY1B</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>26360</th>
+      <td>CDY1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>26361</th>
+      <td>CSPG4P1Y</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>26362</th>
+      <td>GOLGA2P3Y</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>26363</th>
+      <td>GOLGA2P2Y</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>26364 rows × 185 columns</p>
+</div>
+
+
+
+
+```python
+#Make transpose of the count data
+count_closus_raw_trans = count_closus_raw.transpose()
+count_closus_raw_trans
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>26354</th>
+      <th>26355</th>
+      <th>26356</th>
+      <th>26357</th>
+      <th>26358</th>
+      <th>26359</th>
+      <th>26360</th>
+      <th>26361</th>
+      <th>26362</th>
+      <th>26363</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Geneid</th>
+      <td>DDX11L1</td>
+      <td>WASH7P</td>
+      <td>MIR6859-3</td>
+      <td>MIR6859-2</td>
+      <td>MIR6859-4</td>
+      <td>MIR6859-1</td>
+      <td>MIR1302-11</td>
+      <td>MIR1302-9</td>
+      <td>MIR1302-2</td>
+      <td>MIR1302-10</td>
+      <td>...</td>
+      <td>DAZ1</td>
+      <td>DAZ3</td>
+      <td>DAZ2</td>
+      <td>TTTY3B</td>
+      <td>TTTY3</td>
+      <td>CDY1B</td>
+      <td>CDY1</td>
+      <td>CSPG4P1Y</td>
+      <td>GOLGA2P3Y</td>
+      <td>GOLGA2P2Y</td>
+    </tr>
+    <tr>
+      <th>COL-268-R-001</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-268-R-002</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-268-R-003</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-268-R-004</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>COL-001-R-243</th>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-001-R-231</th>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-001-R-242</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-001-R-230</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>COL-001-R-232</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>185 rows × 26364 columns</p>
+</div>
+
+
+
+
+```python
+#change the header to first row
+new_header = count_closus_raw_trans.iloc[0] #grab the first row for the header
+df = count_closus_raw_trans[1:] #take the data less the header row
+df.columns = new_header #set the header row as the df header
+```
+
+
+```python
+#write the transposed cleaned raw matrix to local
+df.to_csv('rnaseq_count.txt', sep='\t')
+```
+
+
+```python
+#Read the transposed data
+count_tran = pd.read_table('rnaseq_count.txt', sep='\t')
+count_tran
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>DDX11L1</th>
+      <th>WASH7P</th>
+      <th>MIR6859-3</th>
+      <th>MIR6859-2</th>
+      <th>MIR6859-4</th>
+      <th>MIR6859-1</th>
+      <th>MIR1302-11</th>
+      <th>MIR1302-9</th>
+      <th>MIR1302-2</th>
+      <th>...</th>
+      <th>DAZ1</th>
+      <th>DAZ3</th>
+      <th>DAZ2</th>
+      <th>TTTY3B</th>
+      <th>TTTY3</th>
+      <th>CDY1B</th>
+      <th>CDY1</th>
+      <th>CSPG4P1Y</th>
+      <th>GOLGA2P3Y</th>
+      <th>GOLGA2P2Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>COL-268-R-001</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>COL-268-R-002</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>COL-268-R-003</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>COL-268-R-004</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>COL-268-R-005</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>179</th>
+      <td>COL-001-R-243</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>180</th>
+      <td>COL-001-R-231</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>181</th>
+      <td>COL-001-R-242</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>182</th>
+      <td>COL-001-R-230</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>183</th>
+      <td>COL-001-R-232</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>184 rows × 26365 columns</p>
+</div>
+
+
+
+
+```python
+#Rename the 'Unnamed' column
+count_tran.rename(columns = {'Unnamed: 0':'COLOSSUS_ID'}, inplace = True)
+count_tran
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>COLOSSUS_ID</th>
+      <th>DDX11L1</th>
+      <th>WASH7P</th>
+      <th>MIR6859-3</th>
+      <th>MIR6859-2</th>
+      <th>MIR6859-4</th>
+      <th>MIR6859-1</th>
+      <th>MIR1302-11</th>
+      <th>MIR1302-9</th>
+      <th>MIR1302-2</th>
+      <th>...</th>
+      <th>DAZ1</th>
+      <th>DAZ3</th>
+      <th>DAZ2</th>
+      <th>TTTY3B</th>
+      <th>TTTY3</th>
+      <th>CDY1B</th>
+      <th>CDY1</th>
+      <th>CSPG4P1Y</th>
+      <th>GOLGA2P3Y</th>
+      <th>GOLGA2P2Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>COL-268-R-001</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>COL-268-R-002</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>COL-268-R-003</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>COL-268-R-004</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>COL-268-R-005</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>179</th>
+      <td>COL-001-R-243</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>180</th>
+      <td>COL-001-R-231</td>
+      <td>0</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>181</th>
+      <td>COL-001-R-242</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>182</th>
+      <td>COL-001-R-230</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>183</th>
+      <td>COL-001-R-232</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>184 rows × 26365 columns</p>
+</div>
+
+
+
+
+```python
+#Map the count matrix with clinical data
+count_clinical_map = clinical_closus.merge(count_tran, on='COLOSSUS_ID')
+count_clinical_map
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>center</th>
+      <th>COLOSSUS_ID</th>
+      <th>gender</th>
+      <th>race</th>
+      <th>birthyear</th>
+      <th>date_CRC_diagnosis</th>
+      <th>ECOG_at_diagnosis</th>
+      <th>histologic_type</th>
+      <th>histologic_grade</th>
+      <th>lymphovascular_invasion</th>
+      <th>...</th>
+      <th>DAZ1</th>
+      <th>DAZ3</th>
+      <th>DAZ2</th>
+      <th>TTTY3B</th>
+      <th>TTTY3</th>
+      <th>CDY1B</th>
+      <th>CDY1</th>
+      <th>CSPG4P1Y</th>
+      <th>GOLGA2P3Y</th>
+      <th>GOLGA2P2Y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>VHIO</td>
+      <td>COL-268-R-001</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1965</td>
+      <td>02/02/15</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>VHIO</td>
+      <td>COL-268-R-002</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1944</td>
+      <td>28/09/14</td>
+      <td>0.0</td>
+      <td>mucinous</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>VHIO</td>
+      <td>COL-268-R-003</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1941</td>
+      <td>15/07/14</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G1</td>
+      <td>no</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>VHIO</td>
+      <td>COL-268-R-004</td>
+      <td>female</td>
+      <td>caucasian</td>
+      <td>1936</td>
+      <td>21/10/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G3</td>
+      <td>no</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>VHIO</td>
+      <td>COL-268-R-005</td>
+      <td>male</td>
+      <td>caucasian</td>
+      <td>1930</td>
+      <td>21/10/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G3</td>
+      <td>no</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>179</th>
+      <td>INSERM</td>
+      <td>COL-002-R-202</td>
+      <td>male</td>
+      <td>NaN</td>
+      <td>1942</td>
+      <td>01/07/13</td>
+      <td>NaN</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>no</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>180</th>
+      <td>INSERM</td>
+      <td>COL-002-R-203</td>
+      <td>female</td>
+      <td>NaN</td>
+      <td>1946</td>
+      <td>21/10/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>181</th>
+      <td>INSERM</td>
+      <td>COL-002-R-204</td>
+      <td>female</td>
+      <td>NaN</td>
+      <td>1939</td>
+      <td>14/06/13</td>
+      <td>2.0</td>
+      <td>adenocarcinoma</td>
+      <td>G2</td>
+      <td>yes</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>182</th>
+      <td>INSERM</td>
+      <td>COL-002-R-205</td>
+      <td>male</td>
+      <td>NaN</td>
+      <td>1932</td>
+      <td>05/07/13</td>
+      <td>1.0</td>
+      <td>adenocarcinoma</td>
+      <td>G1</td>
+      <td>no</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>183</th>
+      <td>INSERM</td>
+      <td>COL-002-R-206</td>
+      <td>male</td>
+      <td>NaN</td>
+      <td>1987</td>
+      <td>22/07/13</td>
+      <td>0.0</td>
+      <td>adenocarcinoma</td>
+      <td>G1</td>
+      <td>no</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>184 rows × 26412 columns</p>
+</div>
+
+
+
+
+```python
+#Save the file to the local
+count_clinical_map.to_csv('raw_count_clinical_map.txt', sep='\t', index=False)
+```
+
+
+```python
+#Filter the genes by counts > 5 atleast in 3 samples
+#Read the row data
+counts = pd.read_table("COLOSSUS_RNA_Lexogen_retrospective cohort_June2020_counts.txt", sep='\t', index_col=0)
+
+#set the filters
+filtered_count = counts[(counts > 5).sum(axis=1) >= 3]
+
+#Save the filtered file
+filtered_count.to_csv("filtered_count_by_5count_in_3samples.txt", sep="\t")
+
+filtered_count
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>COL-268-R-001</th>
+      <th>COL-268-R-002</th>
+      <th>COL-268-R-003</th>
+      <th>COL-268-R-004</th>
+      <th>COL-268-R-005</th>
+      <th>COL-268-R-006</th>
+      <th>COL-268-R-007</th>
+      <th>COL-268-R-008</th>
+      <th>COL-268-R-009</th>
+      <th>COL-268-R-011</th>
+      <th>...</th>
+      <th>COL-001-R-237</th>
+      <th>COL-001-R-238</th>
+      <th>COL-001-R-239</th>
+      <th>COL-001-R-244</th>
+      <th>COL-001-R-245</th>
+      <th>COL-001-R-243</th>
+      <th>COL-001-R-231</th>
+      <th>COL-001-R-242</th>
+      <th>COL-001-R-230</th>
+      <th>COL-001-R-232</th>
+    </tr>
+    <tr>
+      <th>Geneid</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>LOC729737</th>
+      <td>0</td>
+      <td>4</td>
+      <td>23</td>
+      <td>3</td>
+      <td>16</td>
+      <td>5</td>
+      <td>124</td>
+      <td>5</td>
+      <td>2</td>
+      <td>11</td>
+      <td>...</td>
+      <td>1</td>
+      <td>43</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+      <td>97</td>
+      <td>43</td>
+      <td>2</td>
+      <td>40</td>
+      <td>45</td>
+    </tr>
+    <tr>
+      <th>LOC100133331</th>
+      <td>3</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>56</td>
+      <td>21</td>
+      <td>0</td>
+      <td>50</td>
+      <td>0</td>
+      <td>16</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>64</td>
+      <td>0</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <th>LINC00115</th>
+      <td>0</td>
+      <td>9</td>
+      <td>6</td>
+      <td>4</td>
+      <td>6</td>
+      <td>3</td>
+      <td>7</td>
+      <td>17</td>
+      <td>8</td>
+      <td>11</td>
+      <td>...</td>
+      <td>4</td>
+      <td>6</td>
+      <td>7</td>
+      <td>17</td>
+      <td>6</td>
+      <td>33</td>
+      <td>28</td>
+      <td>17</td>
+      <td>16</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <th>LINC01128</th>
+      <td>3</td>
+      <td>22</td>
+      <td>8</td>
+      <td>19</td>
+      <td>38</td>
+      <td>7</td>
+      <td>14</td>
+      <td>21</td>
+      <td>11</td>
+      <td>24</td>
+      <td>...</td>
+      <td>12</td>
+      <td>21</td>
+      <td>2</td>
+      <td>9</td>
+      <td>17</td>
+      <td>41</td>
+      <td>49</td>
+      <td>49</td>
+      <td>16</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>LOC100130417</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>CD24</th>
+      <td>1005</td>
+      <td>2900</td>
+      <td>3667</td>
+      <td>3298</td>
+      <td>8987</td>
+      <td>6456</td>
+      <td>9686</td>
+      <td>6822</td>
+      <td>1264</td>
+      <td>16920</td>
+      <td>...</td>
+      <td>523</td>
+      <td>4843</td>
+      <td>860</td>
+      <td>5853</td>
+      <td>2804</td>
+      <td>6005</td>
+      <td>3943</td>
+      <td>3926</td>
+      <td>5942</td>
+      <td>3569</td>
+    </tr>
+    <tr>
+      <th>TXLNGY</th>
+      <td>30</td>
+      <td>52</td>
+      <td>679</td>
+      <td>1</td>
+      <td>77</td>
+      <td>0</td>
+      <td>50</td>
+      <td>3</td>
+      <td>153</td>
+      <td>1258</td>
+      <td>...</td>
+      <td>295</td>
+      <td>3</td>
+      <td>335</td>
+      <td>395</td>
+      <td>300</td>
+      <td>149</td>
+      <td>0</td>
+      <td>2</td>
+      <td>10</td>
+      <td>228</td>
+    </tr>
+    <tr>
+      <th>KDM5D</th>
+      <td>3</td>
+      <td>6</td>
+      <td>24</td>
+      <td>0</td>
+      <td>29</td>
+      <td>0</td>
+      <td>12</td>
+      <td>0</td>
+      <td>19</td>
+      <td>85</td>
+      <td>...</td>
+      <td>16</td>
+      <td>1</td>
+      <td>18</td>
+      <td>23</td>
+      <td>20</td>
+      <td>25</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>EIF1AY</th>
+      <td>10</td>
+      <td>10</td>
+      <td>121</td>
+      <td>0</td>
+      <td>128</td>
+      <td>0</td>
+      <td>16</td>
+      <td>1</td>
+      <td>16</td>
+      <td>175</td>
+      <td>...</td>
+      <td>22</td>
+      <td>0</td>
+      <td>46</td>
+      <td>148</td>
+      <td>54</td>
+      <td>115</td>
+      <td>12</td>
+      <td>8</td>
+      <td>24</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <th>PRORY</th>
+      <td>0</td>
+      <td>1</td>
+      <td>7</td>
+      <td>0</td>
+      <td>5</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>21</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>13</td>
+      <td>16</td>
+      <td>5</td>
+      <td>31</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>36</td>
+    </tr>
+  </tbody>
+</table>
+<p>17124 rows × 184 columns</p>
+</div>
+
+
+
+
+```python
+#Find transpose and remap to clinical data
+filtered_count_trans = filtered_count.transpose()
+filtered_count_trans.to_csv('filtered_count_trans.txt', sep='\t')
+
+#read the table
+filtered_count = pd.read_table('filtered_count_trans.txt', sep='\t')
+filtered_count
+
+#Rename the 'Unnamed' column
+filtered_count.rename(columns = {'Unnamed: 0':'COLOSSUS_ID'}, inplace = True)
+
+
+#Map filtered genes to clinical data
+filter_count_clinical_map = clinical_closus.merge(filtered_count, on='COLOSSUS_ID')
+filter_count_clinical_map
+
+
+#Save the matrix of clinical info and filtered data
+filter_count_clinical_map.to_csv('filter_count_clinical_map.txt', sep='\t', index=False)
+```
+
+### Batch Correction
+
+
+```python
+
+setwd('/media/molmed/Analysis/ICR/QC/QC/DESeq_Analysis')
+library(DESeq2)
+library(sva)
+
+#Read the count table data
+cts <- read.table("filtered_count_by_5count_in_3samples.txt", header=TRUE, row.names=1)
+
+#Sample information and barch details
+coldata <- read.table("sample_details.txt", header=TRUE, row.names=1)
+
+#Create a DESeq2 object named dds from the gene read count and sample information
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ 1)
+#assign the batch column
+dds$batch <- factor(dds$Center)
+
+#estimate the library size correction and save the normalized counts matrix
+dds <- estimateSizeFactors(dds)
+norm.cts <- counts(dds, normalized=TRUE)
+write.table(norm.cts, "normalized_count.txt", sep = '\t')
+
+#perform regularized log transformation (blind false)
+rld_f <- rlog(dds, blind=FALSE)
+
+rld_t <- rlog(dds, blind=TRUE)
+
+#get the matrix of regularized log count
+rlog_count = assay(rld_t)
+
+#Create model
+cb.corr.model <- model.matrix(~1, data = coldata)
+
+#Batch correction using combat
+cb.corr.counts = ComBat(dat=rlog_count,
+                        batch=dds$batch,
+                        mod=cb.corr.model,
+                        par.prior=TRUE,
+                        prior.plot=TRUE)
+
+#save the count matrix
+write.table(cb.corr.counts, "batch_corrected_rlog_normalized_count.txt", sep = '\t')
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
