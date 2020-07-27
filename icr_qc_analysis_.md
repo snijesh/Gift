@@ -2251,6 +2251,7 @@ write.table(norm.cts, "normalized_count.txt", sep = '\t')
 #perform regularized log transformation (blind false)
 rld_f <- rlog(dds, blind=FALSE)
 
+#perform regularized log transformation (blind false)
 rld_t <- rlog(dds, blind=TRUE)
 
 #get the matrix of regularized log count
@@ -2271,11 +2272,3 @@ write.table(cb.corr.counts, "batch_corrected_rlog_normalized_count.txt", sep = '
 ```
 
 
-```python
-
-```
-
-
-```python
-
-```
